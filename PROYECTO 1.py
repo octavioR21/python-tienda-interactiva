@@ -1,18 +1,36 @@
 
 from datetime import datetime
+import json
+import os
 
+if os.path.exists("inventario.json"):
+    with open("inventario.json", "r") as archivo:
+        inventario = json.load(archivo)
+else:
+    inventario = {
+        "autos":231,
+        "camionetas":124,
+        "motos":133
+    }
 
-inventario = {
-    "autos":231,
-    "camionetas":124,
-    "motos":133
-}
 precios={
     "autos":15000,
     "camionetas":25000,
     "motos":5000
 }
-usuarios={}    
+
+if os.path.exists("usuarios.json"):
+    with open("usuarios.json", "r") as archivo:
+        usuarios = json.load(archivo)
+else: 
+    usuarios={}    
+
+def guardar_datos():
+    with open("inventario.json", "w") as archivo:
+        json.dump(inventario, archivo)
+    with open("usuarios.json", "w") as archivo:
+        json.dump(usuarios, archivo)
+
 
 def ingresar():
     while True:
@@ -22,6 +40,7 @@ def ingresar():
             continue
         if opción==3:
             print("Saliendo de la tienda... Gracias por visitarnos!")
+            guardar_datos()
             continue
         print("Por favor ingresa tu nombre")
         nombre=input()
@@ -86,6 +105,7 @@ def menuOpcionesCompra(usuario_actual):
             if recibo:
                 historial_de_compras.append(recibo)
             carrito.clear()
+            guardar_datos()
             break
 
 def comprarVehículo(usuario_actual):
@@ -196,6 +216,7 @@ def confirmarCompra(usuario_actual,carrito:dict):
         precio_total += precios[vehiculo] * cantidad
         itemsComprados.append(f'{cantidad} {vehiculo}')
     recibo=[f" {itemsComprados}, ${precio_total}, {fecha}"]
+    
     print("========================================")
     print("==          RECIBO DE COMPRA          ==")
     print("")
@@ -233,7 +254,6 @@ print("1. Iniciar sesión")
 print("2. Registrarse")
 print("3. Salir")
 
-
 usuario_actual=ingresar()
 
 while True:
@@ -252,6 +272,7 @@ while True:
 
     if res==4:
         print("Saliendo de la tienda... Gracias por visitarnos!")
+        guardar_datos()
         break
     elif res== 1:
         mostrarInventario()
