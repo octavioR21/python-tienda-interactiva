@@ -51,12 +51,16 @@ def ingresar():
         if opción==1:
             if nombreCompleto not in usuarios:
                 print("Usuario no encontrado. Por favor, regístrese primero.")
+                print("-----------------------------------------------------")
+                print("1. Iniciar sesión")
+                print("2. Registrarse")
+                print("3. Salir")
                 continue
             else: 
                 usuario_actual= nombreCompleto
                 print(f"Bienvenido de nuevo, {nombreCompleto}! Gracias por visitarnos.")
                 return usuario_actual
-        if opción==2:
+        elif opción==2:
             if nombreCompleto in usuarios:
                 print("Ese usuario ya existe. Intente iniciar sesión")
                 continue
@@ -65,6 +69,9 @@ def ingresar():
                 usuarios[nombreCompleto]={"carrito":{},"historial_de_compras":[]}
                 print(f"Usuario registrado correctamente. Gracias por visitarnos, {nombreCompleto}!")
                 return usuario_actual
+        elif opción==3:
+            print("Saliendo de la tienda... Gracias por visitarnos!")
+            break
         else: 
             print("Ingrese una opción válida.")
             continue  
@@ -215,7 +222,11 @@ def confirmarCompra(usuario_actual,carrito:dict):
         
         precio_total += precios[vehiculo] * cantidad
         itemsComprados.append(f'{cantidad} {vehiculo}')
-    recibo=[f" {itemsComprados}, ${precio_total}, {fecha}"]
+    recibo = {
+    "fecha": str(fecha),
+    "items": itemsComprados,
+    "total": precio_total
+    }
     
     print("========================================")
     print("==          RECIBO DE COMPRA          ==")
@@ -236,13 +247,23 @@ def restarUnidadesVendidas(vehiculo:str,cantidadDeUnidades:int):
     inventario[vehiculo]-= cantidadDeUnidades
 
 def mostrarHistorial(usuario_actual):
-    historial_de_compras=usuarios[usuario_actual]["historial_de_compras"]
+    historial_de_compras = usuarios[usuario_actual]["historial_de_compras"]
     print("=============================")
     print("==  HISTORIAL DE COMPRAS   ==")
-    print(historial_de_compras)
+    print("=============================")
+
     if not historial_de_compras:
         print("No hay compras realizadas.")
-    return
+        return
+
+    for i, recibo in enumerate(historial_de_compras, 1):
+        print(f"Compra #{i}")
+        print(f"Fecha: {recibo["fecha"]}")
+        print("Vehículos adquiridos:")
+        for item in recibo["items"]:
+            print(f"   - {item}")
+        print(f"Total de la compra: ${recibo["total"]}")
+        print("-----------------------------")
 
 ###################
 
